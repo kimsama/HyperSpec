@@ -30,6 +30,14 @@ function resolveAssetsDir(): string {
   return compiled;
 }
 
+/**
+ * Resolve the portal assets directory (assets/portal/).
+ */
+function resolvePortalDir(): string {
+  const assetsDir = resolveAssetsDir();
+  return join(assetsDir, "portal");
+}
+
 export async function runInit(projectRoot: string): Promise<void> {
   const outputDir = join(projectRoot, "docs", "html-spec");
 
@@ -54,6 +62,12 @@ export async function runInit(projectRoot: string): Promise<void> {
     copyFileSync(join(assetSrc, file), join(assetDest, file));
   }
 
+  // Copy portal assets (portal.js, portal.css)
+  const portalSrc = resolvePortalDir();
+  for (const file of ["portal.js", "portal.css"]) {
+    copyFileSync(join(portalSrc, file), join(assetDest, file));
+  }
+
   // Create hyperspec.config.json (only if not exists)
   const configPath = join(outputDir, "hyperspec.config.json");
   if (!existsSync(configPath)) {
@@ -66,27 +80,10 @@ export async function runInit(projectRoot: string): Promise<void> {
     writeFileSync(manifestPath, JSON.stringify({ documents: [] }, null, 2) + "\n", "utf-8");
   }
 
-  // Create index.html placeholder (only if not exists)
+  // Copy portal index.html (only if not exists)
   const indexPath = join(outputDir, "index.html");
   if (!existsSync(indexPath)) {
-    writeFileSync(
-      indexPath,
-      `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project Documentation</title>
-  <link rel="stylesheet" href="assets/base.css" />
-</head>
-<body>
-  <h1>Project Documentation</h1>
-  <p>HyperSpec documentation index. Run <code>hyperspec build</code> to generate documents.</p>
-</body>
-</html>
-`,
-      "utf-8"
-    );
+    copyFileSync(join(portalSrc, "index.html"), indexPath);
   }
 
   console.log(`[HyperSpec] Initialized at ${outputDir}`);
