@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { runInit } from "./init.js";
+import { runIndex } from "./index-cmd.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,5 +23,10 @@ program
   .command("init")
   .description("Initialize HyperSpec in the current project")
   .action(async () => { await runInit(process.cwd()); });
+
+program
+  .command("index")
+  .description("Scan HTML files and generate manifest.json")
+  .action(async () => { await runIndex(process.cwd()); });
 
 program.parse();
