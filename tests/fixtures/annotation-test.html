@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Annotation Test</title>
+  <link rel="stylesheet" href="../../assets/base.css">
+  <link rel="stylesheet" href="../../assets/annotate.css">
+  <script type="application/json" id="hyperspec-meta">
+  {"title":"Test Document","category":"spec","tags":["test"],"created":"2026-05-25","updated":"2026-05-25","locale":"en","version":1}
+  </script>
+</head>
+<body>
+  <h1>Test Document</h1>
+  <h2>Authentication Architecture</h2>
+  <p>Use JWT for authentication with a 24-hour token expiry. Tokens are stored in HTTP-only cookies.</p>
+  <h2>Caching Strategy</h2>
+  <p>The Redis cache layer handles session data and rate limiting. Cache TTL is 15 minutes.</p>
+  <h2>Legacy Auth</h2>
+  <p>The legacy authentication system uses basic auth headers. This section is being phased out.</p>
+  <script src="../../assets/annotate.js"></script>
+</body>
+</html>
