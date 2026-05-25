@@ -5,6 +5,8 @@ import { dirname, join } from "node:path";
 import { runInit } from "./init.js";
 import { runIndex } from "./index-cmd.js";
 import { runSetup } from "./setup.js";
+import { runServe } from "./serve.js";
+import { runTranslate } from "./translate.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,5 +36,17 @@ program
   .command("setup")
   .description("Interactive configuration wizard")
   .action(async () => { await runSetup(process.cwd()); });
+
+program
+  .command("serve")
+  .description("Start local preview server with live reload")
+  .option("-p, --port <port>", "Port number", "4444")
+  .action(async (options) => { await runServe(process.cwd(), { port: parseInt(options.port, 10) }); });
+
+program
+  .command("translate <file>")
+  .description("Generate translation prompt for an HTML document")
+  .requiredOption("--locale <code>", "Target locale code (e.g., ko)")
+  .action(async (file, options) => { await runTranslate(process.cwd(), file, options); });
 
 program.parse();
