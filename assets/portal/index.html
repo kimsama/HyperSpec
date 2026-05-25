@@ -7,12 +7,40 @@
   <link rel="stylesheet" href="assets/portal.css">
 </head>
 <body>
-  <div class="portal-header">
-    <h1>Project Documentation</h1>
-    <input type="text" class="portal-search" placeholder="Search documents by title or tag...">
-    <div class="portal-filters"></div>
+  <header class="portal-header">
+    <div class="portal-title">
+      <button class="mobile-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <h1>Project Documentation</h1>
+    </div>
+  </header>
+
+  <div class="portal-overlay" id="portal-overlay"></div>
+
+  <div class="portal-layout">
+    <aside class="sidebar" id="sidebar">
+      <nav class="sidebar-nav" aria-label="Documents">
+        <div class="nav-section-title">Documentation</div>
+        <a href="htmls/example.html" class="nav-link nav-link-template" data-page="example" target="content-frame" hidden>
+          <span class="nav-icon">DOC</span>
+          Example document
+        </a>
+        <p class="sidebar-empty">Add document links here after generating HTML files.</p>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="content-empty">
+        <h2>No document selected</h2>
+        <p>Generate an HTML document, add it to the sidebar, then open it here.</p>
+      </div>
+      <iframe class="content-frame" name="content-frame" id="content-frame" title="Document preview"></iframe>
+    </main>
   </div>
-  <div class="portal-grid"></div>
+
   <script src="assets/portal.js"></script>
 </body>
 </html>

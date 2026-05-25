@@ -38,6 +38,17 @@ describe("init", () => {
     expect(manifest.documents).toEqual([]);
   });
 
+  it("creates sidebar index shell for generated document links", async () => {
+    await runInit(tempDir);
+    const indexPath = join(tempDir, "docs", "html", "index.html");
+    const html = readFileSync(indexPath, "utf-8");
+
+    expect(html).toContain('class="sidebar-nav"');
+    expect(html).toContain('target="content-frame"');
+    expect(html).toContain('name="content-frame"');
+    expect(html).not.toContain('class="portal-grid"');
+  });
+
   it("does not overwrite existing config", async () => {
     await runInit(tempDir);
     const configPath = join(tempDir, "docs", "html", "hyperspec.config.json");
