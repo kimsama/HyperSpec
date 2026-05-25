@@ -39,7 +39,7 @@ function resolvePortalDir(): string {
 }
 
 export async function runInit(projectRoot: string): Promise<void> {
-  const outputDir = join(projectRoot, "docs", "html-spec");
+  const outputDir = join(projectRoot, "docs", "html");
 
   // Create directory structure
   const dirs = [

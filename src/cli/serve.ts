@@ -18,7 +18,7 @@ const MIME_TYPES: Record<string, string> = {
 const LIVE_RELOAD_SCRIPT = `<script>(function(){var es=new EventSource("/__hs_reload");es.onmessage=function(){location.reload()};es.onerror=function(){setTimeout(function(){location.reload()},2000)}})();</script>`;
 
 export async function runServe(projectRoot: string, options: { port?: number }): Promise<void> {
-  const config = loadConfig(join(projectRoot, "docs", "html-spec", "hyperspec.config.json"));
+  const config = loadConfig(join(projectRoot, "docs", "html", "hyperspec.config.json"));
   const servePath = join(projectRoot, config.outputDir);
   const port = options.port || 4444;
   let clients: Array<ServerResponse> = [];

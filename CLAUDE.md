@@ -15,7 +15,7 @@ TypeScript CLI compiled with tsup (`src/` -> `dist/`) paired with vanilla JS/CSS
 
 ### Key Modules
 
-- `src/lib/config.ts` — `HyperSpecConfig` type, `loadConfig`/`saveConfig`/`getDefaultConfig`. Config lives at `docs/html-spec/hyperspec.config.json` inside user projects.
+- `src/lib/config.ts` — `HyperSpecConfig` type, `loadConfig`/`saveConfig`/`getDefaultConfig`. Config lives at `docs/html/hyperspec.config.json` inside user projects.
 - `src/lib/manifest.ts` — `extractMetadata` parses `<script id="hyperspec-meta">` from HTML. `generateManifest` scans `htmls/` dir, builds `manifest.json` with translation linking.
 - `src/lib/scanner.ts` — `scanComponents` parses CSS for class selectors and JS for `customElements.define()` calls. Returns `ScanResult` with `toMarkdown()`.
 - `src/cli/*.ts` — Each CLI command is a separate file exporting a `run*` function. All registered in `src/cli/index.ts`.

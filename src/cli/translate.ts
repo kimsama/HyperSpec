@@ -9,7 +9,7 @@ export async function runTranslate(
   options: { locale: string }
 ): Promise<void> {
   const config = loadConfig(
-    join(projectRoot, "docs", "html-spec", "hyperspec.config.json")
+    join(projectRoot, "docs", "html", "hyperspec.config.json")
   );
   const outputDir = join(projectRoot, config.outputDir);
   const filePath = join(outputDir, file);

@@ -5,7 +5,7 @@ import { generateManifest } from "../lib/manifest.js";
 
 export async function runIndex(projectRoot: string): Promise<void> {
   const config = loadConfig(
-    join(projectRoot, "docs", "html-spec", "hyperspec.config.json")
+    join(projectRoot, "docs", "html", "hyperspec.config.json")
   );
   const outputDir = join(projectRoot, config.outputDir);
   const manifest = generateManifest(outputDir, {

@@ -12,7 +12,7 @@ describe("config", () => {
   describe("getDefaultConfig", () => {
     it("returns complete default config", () => {
       const config = getDefaultConfig();
-      expect(config.outputDir).toBe("docs/html-spec");
+      expect(config.outputDir).toBe("docs/html");
       expect(config.locales).toEqual(["en", "ko"]);
       expect(config.assetMode).toBe("reference");
       expect(config.annotation.enabled).toBe(true);
@@ -32,7 +32,7 @@ describe("config", () => {
       saveConfig(configPath, config);
       const loaded = loadConfig(configPath);
       expect(loaded.index.title).toBe("My Docs");
-      expect(loaded.outputDir).toBe("docs/html-spec");
+      expect(loaded.outputDir).toBe("docs/html");
     });
 
     it("returns default config when file does not exist", () => {

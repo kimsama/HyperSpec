@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HyperSpec Architecture</title>
+  <link rel="stylesheet" href="../assets/base.css">
+  <link rel="stylesheet" href="../assets/annotate.css">
+  <script type="application/json" id="hyperspec-meta">
+  {
+    "title": "HyperSpec Architecture",
+    "category": "spec",
+    "tags": ["architecture", "data-flow", "modules"],
+    "created": "2026-05-25",
+    "updated": "2026-05-25",
+    "locale": "en",
+    "source": "docs/00.Architecture.md",
+    "version": 1
+  }
+  </script>
+  <style>
+    :root {
+      --node-cli: #3b82f6;
+      --browser-asset: #22c55e;
+      --skill-file: #a855f7;
+      --user-project: #f59e0b;
+    }
+    .arch-tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--hs-color-border); margin: 2rem 0 0; }
+    .arch-tab {
+      padding: 10px 20px; cursor: pointer; border: 1px solid var(--hs-color-border);
+      border-bottom: none; border-radius: 8px 8px 0 0; background: #f8fafc;
+      font-weight: 500; font-size: 14px; transition: all 0.15s; user-select: none;
+    }
+    .arch-tab:hover { background: #e2e8f0; }
+    .arch-tab.active { background: #fff; border-bottom: 2px solid #fff; margin-bottom: -2px; color: var(--hs-color-accent); }
+    .arch-panel { display: none; padding: 1.5rem 0; }
+    .arch-panel.active { display: block; }
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .badge-cli { background: #dbeafe; color: #1e40af; }
+    .badge-asset { background: #dcfce7; color: #166534; }
+    .badge-skill { background: #f3e8ff; color: #6b21a8; }
+    .badge-config { background: #fef3c7; color: #92400e; }
+
+    .flow-diagram {
+      background: #f8fafc; border: 1px solid var(--hs-color-border);
+      border-radius: var(--hs-radius); padding: 1.5rem; margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+    .flow-diagram svg { display: block; margin: 0 auto; }
+
+    .module-card {
+      border: 1px solid var(--hs-color-border); border-radius: var(--hs-radius);
+      padding: 1rem 1.25rem; margin: 0.75rem 0; transition: box-shadow 0.15s;
+    }
+    .module-card:hover { box-shadow: var(--hs-shadow); }
+    .module-card h4 { margin: 0 0 0.5rem; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+    .module-card p { margin: 0; font-size: 14px; color: var(--hs-color-text-secondary); }
+    .module-card code { font-size: 12px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    details { margin: 0.75rem 0; }
+    details summary {
+      cursor: pointer; padding: 8px 12px; background: #f8fafc;
+      border: 1px solid var(--hs-color-border); border-radius: 6px;
+      font-weight: 500; font-size: 14px; user-select: none;
+    }
+    details[open] summary { border-radius: 6px 6px 0 0; border-bottom: none; }
+    details .detail-content {
+      padding: 12px 16px; border: 1px solid var(--hs-color-border);
+      border-top: none; border-radius: 0 0 6px 6px; font-size: 14px;
+    }
+
+    .step-list { counter-reset: step; list-style: none; padding: 0; }
+    .step-list li {
+      counter-increment: step; padding: 12px 12px 12px 48px; position: relative;
+      border-left: 2px solid var(--hs-color-border); margin-left: 16px;
+    }
+    .step-list li::before {
+      content: counter(step); position: absolute; left: -14px; top: 10px;
+      width: 26px; height: 26px; background: var(--hs-color-accent); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600;
+    }
+    .step-list li:last-child { border-left-color: transparent; }
+  </style>
+</head>
+<body>
+  <h1>HyperSpec Architecture</h1>
+  <p style="color: var(--hs-color-text-secondary); margin-top: -0.5rem;">
+    System architecture, data flows, and module responsibilities.
+    <span class="badge badge-cli">CLI</span>
+    <span class="badge badge-asset">Assets</span>
+    <span class="badge badge-skill">Skills</span>
+  </p>
+
+  <!-- ===== OVERVIEW ===== -->
+  <h2>Overview</h2>
+  <p>HyperSpec has two distinct runtime targets sharing one repository:</p>
+
+  <div class="grid-2">
+    <div class="module-card" style="border-left: 3px solid var(--node-cli);">
+      <h4><span class="badge badge-cli">Node.js CLI</span> <code>src/ → dist/</code></h4>
+      <p>TypeScript compiled with tsup to ESM. Handles project init, manifest indexing, component scanning, dev serving, translation prompts, and skill installation.</p>
+    </div>
+    <div class="module-card" style="border-left: 3px solid var(--browser-asset);">
+      <h4><span class="badge badge-asset">Browser Assets</span> <code>assets/</code></h4>
+      <p>Vanilla JS/CSS shipped as-is. Injected into every generated HTML. Provides the annotation system and the index portal.</p>
+    </div>
+  </div>
+
+  <div class="flow-diagram">
+    <svg viewBox="0 0 720 200" width="720" height="200" xmlns="http://www.w3.org/2000/svg" style="font-family: system-ui, sans-serif; font-size: 13px;">
+      <!-- User Project Box -->
+      <rect x="20" y="20" width="280" height="160" rx="12" fill="#fefce8" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="40" y="46" font-weight="600" fill="#92400e">User Project</text>
+      <text x="40" y="70" fill="#78716c" font-size="12">docs/html-spec/</text>
+      <text x="55" y="90" fill="#57534e" font-size="11">htmls/*.html</text>
+      <text x="55" y="108" fill="#57534e" font-size="11">assets/ (copied)</text>
+      <text x="55" y="126" fill="#57534e" font-size="11">manifest.json</text>
+      <text x="55" y="144" fill="#57534e" font-size="11">index.html (portal)</text>
+      <text x="55" y="162" fill="#57534e" font-size="11">hyperspec.config.json</text>
+
+      <!-- Arrow -->
+      <line x1="310" y1="100" x2="400" y2="100" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="325" y="90" fill="#64748b" font-size="11" font-weight="500">hyperspec init</text>
+
+      <!-- HyperSpec Package Box -->
+      <rect x="410" y="20" width="290" height="160" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="430" y="46" font-weight="600" fill="#1e40af">HyperSpec Package</text>
+      <rect x="430" y="60" width="120" height="28" rx="4" fill="#dbeafe"/>
+      <text x="445" y="79" fill="#1e40af" font-size="11" font-weight="500">dist/index.js (CLI)</text>
+      <rect x="430" y="96" width="120" height="28" rx="4" fill="#dcfce7"/>
+      <text x="445" y="115" fill="#166534" font-size="11" font-weight="500">assets/ (JS/CSS)</text>
+      <rect x="430" y="132" width="120" height="28" rx="4" fill="#f3e8ff"/>
+      <text x="445" y="151" fill="#6b21a8" font-size="11" font-weight="500">skills/ (markdown)</text>
+
+      <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>
+    </svg>
+  </div>
+
+  <!-- ===== DATA FLOW TABS ===== -->
+  <h2>Data Flows</h2>
+
+  <div class="arch-tabs">
+    <div class="arch-tab active" data-tab="generation">Generation</div>
+    <div class="arch-tab" data-tab="feedback">Feedback Loop</div>
+    <div class="arch-tab" data-tab="indexing">Manifest Indexing</div>
+  </div>
+
+  <!-- Generation Flow -->
+  <div class="arch-panel active" data-tab="generation">
+    <p>When an agent receives the <code>/hyperspec</code> command:</p>
+    <ol class="step-list">
+      <li>Read <code>hyperspec.config.json</code> for <strong>assetMode</strong> and <strong>components</strong> settings</li>
+      <li>Read <code>COMPONENT-REFERENCE.md</code> if a component library is registered</li>
+      <li>Generate rich HTML with tables, SVG diagrams, code blocks, interactive elements</li>
+      <li>Inject <code>&lt;script id="hyperspec-meta"&gt;</code> metadata block</li>
+      <li>Inject annotation module (reference links or inline, per assetMode)</li>
+      <li>Save to <code>htmls/&lt;filename&gt;.html</code></li>
+      <li>Run <code>hyperspec index</code> → <code>manifest.json</code> updated</li>
+      <li>Portal (<code>index.html</code>) reads manifest at load time — new doc appears automatically</li>
+    </ol>
+  </div>
+
+  <!-- Feedback Loop -->
+  <div class="arch-panel" data-tab="feedback">
+    <p>The annotation → feedback → revision cycle:</p>
+    <div class="flow-diagram">
+      <svg viewBox="0 0 680 340" width="680" height="340" xmlns="http://www.w3.org/2000/svg" style="font-family: system-ui, sans-serif; font-size: 12px;">
+        <!-- Nodes -->
+        <rect x="240" y="10" width="200" height="36" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+        <text x="282" y="33" fill="#1e40af" font-weight="500">1. Agent generates HTML</text>
+
+        <rect x="240" y="66" width="200" height="36" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="262" y="89" fill="#92400e" font-weight="500">2. User opens in browser</text>
+
+        <rect x="240" y="122" width="200" height="36" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="248" y="145" fill="#92400e" font-weight="500">3. Select text → annotate</text>
+
+        <rect x="240" y="178" width="200" height="36" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="250" y="201" fill="#92400e" font-weight="500">4. Stored in localStorage</text>
+
+        <rect x="240" y="234" width="200" height="36" rx="6" fill="#dcfce7" stroke="#22c55e"/>
+        <text x="252" y="257" fill="#166534" font-weight="500">5. Export Feedback → 📋</text>
+
+        <rect x="240" y="290" width="200" height="36" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+        <text x="250" y="313" fill="#1e40af" font-weight="500">6. Agent applies changes</text>
+
+        <!-- Arrows -->
+        <line x1="340" y1="46" x2="340" y2="66" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="340" y1="102" x2="340" y2="122" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="340" y1="158" x2="340" y2="178" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="340" y1="214" x2="340" y2="234" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="340" y1="270" x2="340" y2="290" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+        <!-- Loop back arrow -->
+        <path d="M 440 308 C 540 308 540 28 440 28" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arr3)"/>
+        <text x="502" y="175" fill="#3b82f6" font-size="11" font-weight="500" transform="rotate(90, 502, 175)">version++, re-index</text>
+
+        <defs>
+          <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#94a3b8"/></marker>
+          <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#3b82f6"/></marker>
+        </defs>
+      </svg>
+    </div>
+    <p>The feedback JSON omits DOM positions — agents locate content by <code>selectedText</code> + <code>section</code> heading, which is robust across HTML regeneration.</p>
+  </div>
+
+  <!-- Manifest Indexing -->
+  <div class="arch-panel" data-tab="indexing">
+    <p>The <code>hyperspec index</code> command scans <code>htmls/</code> and builds <code>manifest.json</code>:</p>
+    <div class="grid-2">
+      <div>
+        <h4 style="margin-top: 0;">Input: File System</h4>
+        <pre style="font-size: 13px;"><code>htmls/
+  auth-spec.html       <span style="color:#64748b;">(en, v2)</span>
+  api-review.html      <span style="color:#64748b;">(en, v1)</span>
+  ko/
+    auth-spec.html     <span style="color:#64748b;">(ko, v1)</span></code></pre>
+      </div>
+      <div>
+        <h4 style="margin-top: 0;">Output: manifest.json</h4>
+        <pre style="font-size: 13px;"><code>{
+  "documents": [
+    {
+      "path": "auth-spec.html",
+      "locale": "en",
+      "version": 2,
+      "translations": {
+        <span style="color:#22c55e;">"ko": "ko/auth-spec.html"</span>
+      }
+    }
+  ]
+}</code></pre>
+      </div>
+    </div>
+    <p>Translation linking matches files in locale subdirs (<code>ko/auth-spec.html</code>) to top-level sources (<code>auth-spec.html</code>) by filename. When source <code>version</code> &gt; translation <code>version</code>, the portal marks the translation <span style="color: var(--hs-color-warning); font-weight: 600;">⚠ outdated</span>.</p>
+  </div>
+
+  <!-- ===== MODULE RESPONSIBILITIES ===== -->
+  <h2>Module Responsibilities</h2>
+
+  <h3>CLI Modules <span class="badge badge-cli">src/cli/</span></h3>
+  <table>
+    <thead>
+      <tr><th>Module</th><th>Entry Function</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>index.ts</code></td><td><code>program.parse()</code></td><td>Commander setup, registers all 7 commands</td></tr>
+      <tr><td><code>init.ts</code></td><td><code>runInit(root)</code></td><td>Creates <code>docs/html-spec/</code> structure, copies assets</td></tr>
+      <tr><td><code>index-cmd.ts</code></td><td><code>runIndex(root)</code></td><td>Runs indexer, writes <code>manifest.json</code></td></tr>
+      <tr><td><code>setup.ts</code></td><td><code>runSetup(root)</code></td><td>Interactive config wizard, component scanning</td></tr>
+      <tr><td><code>serve.ts</code></td><td><code>runServe(root, opts)</code></td><td>HTTP server + SSE live reload via chokidar</td></tr>
+      <tr><td><code>translate.ts</code></td><td><code>runTranslate(root, file, opts)</code></td><td>Prints translation prompt for agents</td></tr>
+      <tr><td><code>install.ts</code></td><td><code>runInstall(agent)</code></td><td>Copies skill files to agent-specific locations</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Library Modules <span class="badge badge-config">src/lib/</span></h3>
+  <table>
+    <thead>
+      <tr><th>Module</th><th>Key Exports</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>config.ts</code></td><td><code>HyperSpecConfig</code>, <code>loadConfig</code>, <code>saveConfig</code></td><td>Config schema, persistence, defaults with partial merge via <code>??</code></td></tr>
+      <tr><td><code>manifest.ts</code></td><td><code>extractMetadata</code>, <code>generateManifest</code></td><td>HTML metadata parsing, manifest generation with translation linking</td></tr>
+      <tr><td><code>scanner.ts</code></td><td><code>scanComponents</code> → <code>ScanResult</code></td><td>CSS class / JS custom element extraction, markdown reference generation</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Browser Assets <span class="badge badge-asset">assets/</span></h3>
+
+  <div class="grid-2">
+    <div class="module-card">
+      <h4><code>annotate.js</code> <span style="color: var(--hs-color-text-secondary); font-weight: 400;">~710 lines</span></h4>
+      <p>Annotation IIFE: selection detection, floating toolbar, popover, side panel, localStorage persistence, structured JSON export to clipboard.</p>
+    </div>
+    <div class="module-card">
+      <h4><code>annotate.css</code> <span style="color: var(--hs-color-text-secondary); font-weight: 400;">~515 lines</span></h4>
+      <p>All annotation UI styles: toolbar, popover, 4 highlight types (comment/modify/delete/insert), side panel, export button, toast, responsive.</p>
+    </div>
+    <div class="module-card">
+      <h4><code>base.css</code> <span style="color: var(--hs-color-text-secondary); font-weight: 400;">~120 lines</span></h4>
+      <p>Typography, layout, CSS variables (<code>--hs-*</code>) for generated documents.</p>
+    </div>
+    <div class="module-card">
+      <h4><code>portal/*</code> <span style="color: var(--hs-color-text-secondary); font-weight: 400;">~370 lines</span></h4>
+      <p>Index portal: HTML shell, JS IIFE (manifest fetch, card render, search/filter/locale), CSS styles.</p>
+    </div>
+  </div>
+
+  <!-- ===== ASSET MODES ===== -->
+  <h2>Asset Modes</h2>
+
+  <details>
+    <summary><strong>reference</strong> (default) — link local asset files</summary>
+    <div class="detail-content">
+      <pre><code>&lt;link rel="stylesheet" href="../assets/base.css"&gt;
+&lt;link rel="stylesheet" href="../assets/annotate.css"&gt;
+&lt;script src="../assets/annotate.js"&gt;&lt;/script&gt;</code></pre>
+      <p>Lighter HTML, shared assets. Works with GitHub Pages and <code>hyperspec serve</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><strong>inline</strong> — embed CSS/JS directly in HTML</summary>
+    <div class="detail-content">
+      <pre><code>&lt;style&gt;/* base.css + annotate.css inlined */&lt;/style&gt;
+&lt;script&gt;/* annotate.js inlined */&lt;/script&gt;</code></pre>
+      <p>Self-contained single file. Works for email sharing, S3 upload, standalone distribution.</p>
+    </div>
+  </details>
+
+  <!-- ===== MULTI-AGENT ===== -->
+  <h2>Multi-Agent Support</h2>
+  <p>The HTML output and annotation JSON are agent-agnostic. Only skill/instruction files differ:</p>
+
+  <table>
+    <thead><tr><th>Agent</th><th>Skill Format</th><th>Install Location</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Claude Code</strong></td><td>SKILL.md + commands/*.md</td><td><code>~/.claude/skills/hyperspec/</code></td></tr>
+      <tr><td><strong>Codex</strong></td><td>AGENTS.md</td><td>Project root</td></tr>
+      <tr><td><strong>Antigravity</strong></td><td>skill.md</td><td><code>.antigravity/skills/</code></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===== TAB SCRIPT ===== -->
+  <script>
+    document.querySelectorAll('.arch-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        document.querySelectorAll('.arch-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.arch-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelector(`.arch-panel[data-tab="${target}"]`).classList.add('active');
+      });
+    });
+  </script>
+
+  <script src="../assets/annotate.js"></script>
+</body>
+</html>

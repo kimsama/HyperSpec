@@ -23,7 +23,7 @@ Expected format:
 
 ## Apply each annotation
 
-1. Find the source HTML file in `docs/html-spec/htmls/`
+1. Find the source HTML file in `docs/html/htmls/`
 2. Read the file
 3. For each annotation:
    - `comment`: improve the referenced content based on the feedback

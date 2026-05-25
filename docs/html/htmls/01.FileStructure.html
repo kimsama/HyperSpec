@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HyperSpec File Structure</title>
+  <link rel="stylesheet" href="../assets/base.css">
+  <link rel="stylesheet" href="../assets/annotate.css">
+  <script type="application/json" id="hyperspec-meta">
+  {
+    "title": "HyperSpec File Structure",
+    "category": "spec",
+    "tags": ["file-structure", "project-layout", "dependencies"],
+    "created": "2026-05-25",
+    "updated": "2026-05-25",
+    "locale": "en",
+    "source": "docs/01.FileStructure.md",
+    "version": 1
+  }
+  </script>
+  <style>
+    .tree { font-family: var(--hs-font-mono); font-size: 13px; line-height: 1.8; }
+    .tree ul { list-style: none; padding-left: 1.5em; margin: 0; }
+    .tree > ul { padding-left: 0; }
+    .tree li { position: relative; }
+    .tree li::before {
+      content: ''; position: absolute; left: -1.1em; top: 0;
+      border-left: 1px solid #cbd5e1; height: 100%;
+    }
+    .tree li::after {
+      content: ''; position: absolute; left: -1.1em; top: 0.9em;
+      border-bottom: 1px solid #cbd5e1; width: 0.8em;
+    }
+    .tree li:last-child::before { height: 0.9em; }
+    .tree > ul > li::before, .tree > ul > li::after { display: none; }
+
+    .tree-dir { cursor: pointer; user-select: none; }
+    .tree-dir::before { content: '📁 '; }
+    .tree-dir.open::before { content: '📂 '; }
+    .tree-file::before { content: '📄 '; }
+    .tree-file-ts::before { content: '🔷 '; }
+    .tree-file-js::before { content: '🟡 '; }
+    .tree-file-css::before { content: '🎨 '; }
+    .tree-file-html::before { content: '🌐 '; }
+    .tree-file-md::before { content: '📝 '; }
+    .tree-file-json::before { content: '📋 '; }
+    .tree-file-test::before { content: '🧪 '; }
+
+    .tree-desc {
+      color: var(--hs-color-text-secondary); font-family: var(--hs-font-sans);
+      font-size: 12px; margin-left: 8px;
+    }
+    .tree li > ul { display: none; }
+    .tree li.open > ul { display: block; }
+
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 12px; margin: 1rem 0;
+      padding: 12px 16px; background: #f8fafc; border-radius: var(--hs-radius);
+      border: 1px solid var(--hs-color-border); font-size: 13px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+
+    .section-tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--hs-color-border); margin: 1.5rem 0 0; }
+    .section-tab {
+      padding: 8px 18px; cursor: pointer; border: 1px solid var(--hs-color-border);
+      border-bottom: none; border-radius: 8px 8px 0 0; background: #f8fafc;
+      font-weight: 500; font-size: 14px; transition: all 0.15s; user-select: none;
+    }
+    .section-tab:hover { background: #e2e8f0; }
+    .section-tab.active { background: #fff; border-bottom: 2px solid #fff; margin-bottom: -2px; color: var(--hs-color-accent); }
+    .section-panel { display: none; padding: 1.5rem 0; }
+    .section-panel.active { display: block; }
+
+    .dep-card {
+      display: grid; grid-template-columns: 140px 80px 1fr; gap: 8px;
+      padding: 10px 14px; border: 1px solid var(--hs-color-border);
+      border-radius: 6px; margin: 6px 0; align-items: center; font-size: 14px;
+    }
+    .dep-card:hover { background: #f8fafc; }
+    .dep-name { font-weight: 600; font-family: var(--hs-font-mono); font-size: 13px; }
+    .dep-version { color: var(--hs-color-text-secondary); font-family: var(--hs-font-mono); font-size: 12px; }
+    .dep-badge {
+      display: inline-block; padding: 1px 8px; border-radius: 4px;
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+    }
+    .dep-prod { background: #dcfce7; color: #166534; }
+    .dep-dev { background: #f1f5f9; color: #64748b; }
+
+    .expand-all-btn {
+      padding: 6px 14px; border: 1px solid var(--hs-color-border); border-radius: 6px;
+      background: #fff; cursor: pointer; font-size: 13px; font-weight: 500;
+      transition: all 0.15s; float: right; margin-top: -2.5rem;
+    }
+    .expand-all-btn:hover { background: #f1f5f9; }
+  </style>
+</head>
+<body>
+  <h1>HyperSpec File Structure</h1>
+  <p style="color: var(--hs-color-text-secondary); margin-top: -0.5rem;">
+    Interactive project layout with file descriptions. Click directories to expand.
+  </p>
+
+  <!-- ===== TABS ===== -->
+  <div class="section-tabs">
+    <div class="section-tab active" data-tab="repo">Repository Layout</div>
+    <div class="section-tab" data-tab="output">User Project Output</div>
+    <div class="section-tab" data-tab="deps">Dependencies</div>
+  </div>
+
+  <!-- ===== REPO LAYOUT ===== -->
+  <div class="section-panel active" data-tab="repo">
+    <button class="expand-all-btn" id="toggleAll">Expand All</button>
+
+    <div class="legend">
+      <span class="legend-item">🔷 TypeScript</span>
+      <span class="legend-item">🟡 JavaScript</span>
+      <span class="legend-item">🎨 CSS</span>
+      <span class="legend-item">🌐 HTML</span>
+      <span class="legend-item">📝 Markdown</span>
+      <span class="legend-item">📋 JSON/Config</span>
+      <span class="legend-item">🧪 Test</span>
+    </div>
+
+    <div class="tree" id="fileTree">
+      <ul>
+        <li class="open">
+          <span class="tree-dir open" style="font-weight:600;">HyperSpec/</span>
+          <ul>
+            <li><span class="tree-file-json">package.json</span><span class="tree-desc">npm config, bin entry, scripts</span></li>
+            <li><span class="tree-file-json">tsconfig.json</span><span class="tree-desc">TypeScript: ES2022, ESM, strict</span></li>
+            <li><span class="tree-file-ts">tsup.config.ts</span><span class="tree-desc">Bundles src/cli/index.ts → dist/</span></li>
+            <li><span class="tree-file-ts">vitest.config.ts</span><span class="tree-desc">Test runner config</span></li>
+            <li><span class="tree-file-md">CLAUDE.md</span><span class="tree-desc">Project instructions for AI agents</span></li>
+            <li><span class="tree-file">.gitignore</span><span class="tree-desc">node_modules, dist, tsbuildinfo</span></li>
+
+            <li>
+              <span class="tree-dir">bin/</span>
+              <ul>
+                <li><span class="tree-file-js">hyperspec.js</span><span class="tree-desc">CLI shim: #!/usr/bin/env node</span></li>
+              </ul>
+            </li>
+
+            <li>
+              <span class="tree-dir">src/</span>
+              <ul>
+                <li>
+                  <span class="tree-dir">cli/</span><span class="tree-desc">CLI commands (TypeScript)</span>
+                  <ul>
+                    <li><span class="tree-file-ts">index.ts</span><span class="tree-desc">Commander setup, 7 command registrations</span></li>
+                    <li><span class="tree-file-ts">init.ts</span><span class="tree-desc">hyperspec init — scaffolds project</span></li>
+                    <li><span class="tree-file-ts">index-cmd.ts</span><span class="tree-desc">hyperspec index — manifest generation</span></li>
+                    <li><span class="tree-file-ts">setup.ts</span><span class="tree-desc">hyperspec setup — config wizard</span></li>
+                    <li><span class="tree-file-ts">serve.ts</span><span class="tree-desc">hyperspec serve — HTTP + SSE live reload</span></li>
+                    <li><span class="tree-file-ts">translate.ts</span><span class="tree-desc">hyperspec translate — agent prompt</span></li>
+                    <li><span class="tree-file-ts">install.ts</span><span class="tree-desc">hyperspec install|update — skill files</span></li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="tree-dir">lib/</span><span class="tree-desc">Shared library modules</span>
+                  <ul>
+                    <li><span class="tree-file-ts">config.ts</span><span class="tree-desc">HyperSpecConfig type, load/save/defaults</span></li>
+                    <li><span class="tree-file-ts">manifest.ts</span><span class="tree-desc">HTML metadata extraction, manifest generation</span></li>
+                    <li><span class="tree-file-ts">scanner.ts</span><span class="tree-desc">CSS/JS component scanning</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <span class="tree-dir">assets/</span><span class="tree-desc">Browser assets (vanilla, no build)</span>
+              <ul>
+                <li><span class="tree-file-js">annotate.js</span><span class="tree-desc">~710 lines — annotation IIFE</span></li>
+                <li><span class="tree-file-css">annotate.css</span><span class="tree-desc">~515 lines — annotation styles</span></li>
+                <li><span class="tree-file-css">base.css</span><span class="tree-desc">~120 lines — typography, layout</span></li>
+                <li>
+                  <span class="tree-dir">portal/</span><span class="tree-desc">Index portal</span>
+                  <ul>
+                    <li><span class="tree-file-html">index.html</span><span class="tree-desc">Portal HTML shell</span></li>
+                    <li><span class="tree-file-js">portal.js</span><span class="tree-desc">Manifest fetch, cards, search/filter</span></li>
+                    <li><span class="tree-file-css">portal.css</span><span class="tree-desc">Portal grid, cards, chips</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <span class="tree-dir">skills/</span><span class="tree-desc">Agent instruction files (markdown)</span>
+              <ul>
+                <li>
+                  <span class="tree-dir">claude-code/</span>
+                  <ul>
+                    <li><span class="tree-file-md">SKILL.md</span><span class="tree-desc">Generation principles, asset mode, metadata</span></li>
+                    <li>
+                      <span class="tree-dir">commands/</span>
+                      <ul>
+                        <li><span class="tree-file-md">hyperspec.md</span><span class="tree-desc">/hyperspec — generate HTML</span></li>
+                        <li><span class="tree-file-md">hyperspec-feedback.md</span><span class="tree-desc">/hyperspec-feedback — process annotations</span></li>
+                        <li><span class="tree-file-md">hyperspec-translate.md</span><span class="tree-desc">/hyperspec-translate — translate</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="tree-dir">codex/</span>
+                  <ul>
+                    <li><span class="tree-file-md">AGENTS.md</span><span class="tree-desc">Codex agent instructions</span></li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="tree-dir">antigravity/</span>
+                  <ul>
+                    <li><span class="tree-file-md">skill.md</span><span class="tree-desc">Antigravity agent instructions</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <span class="tree-dir">tests/</span><span class="tree-desc">24 tests across 6 files</span>
+              <ul>
+                <li>
+                  <span class="tree-dir">lib/</span>
+                  <ul>
+                    <li><span class="tree-file-test">config.test.ts</span><span class="tree-desc">4 tests: defaults, round-trip, missing, partial</span></li>
+                    <li><span class="tree-file-test">manifest.test.ts</span><span class="tree-desc">5 tests: extract, generate, translations</span></li>
+                    <li><span class="tree-file-test">scanner.test.ts</span><span class="tree-desc">7 tests: CSS, JS, markdown output</span></li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="tree-dir">cli/</span>
+                  <ul>
+                    <li><span class="tree-file-test">init.test.ts</span><span class="tree-desc">4 tests: dirs, config, manifest, idempotent</span></li>
+                    <li><span class="tree-file-test">index-cmd.test.ts</span><span class="tree-desc">2 tests: with/without HTML files</span></li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="tree-dir">integration/</span>
+                  <ul>
+                    <li><span class="tree-file-test">full-flow.test.ts</span><span class="tree-desc">3 tests: end-to-end init→index</span></li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="tree-dir">fixtures/</span>
+                  <ul>
+                    <li><span class="tree-file-html">annotation-test.html</span><span class="tree-desc">Manual browser test page</span></li>
+                    <li><span class="tree-file-html">sample-doc.html</span><span class="tree-desc">HTML with hyperspec-meta</span></li>
+                    <li><span class="tree-file-html">sample-no-meta.html</span><span class="tree-desc">Plain HTML, no metadata</span></li>
+                    <li>
+                      <span class="tree-dir">sample-components/</span>
+                      <ul>
+                        <li><span class="tree-file-css">components.css</span><span class="tree-desc">Test .hs-* classes</span></li>
+                        <li><span class="tree-file-js">components.js</span><span class="tree-desc">Test customElements.define</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <span class="tree-dir">docs/</span>
+              <ul>
+                <li><span class="tree-file-md">00.Architecture.md</span><span class="tree-desc">System architecture</span></li>
+                <li><span class="tree-file-md">01.FileStructure.md</span><span class="tree-desc">This document</span></li>
+                <li>
+                  <span class="tree-dir">html/</span><span class="tree-desc">Generated HTML versions</span>
+                  <ul>
+                    <li><span class="tree-file-html">00.Architecture.html</span></li>
+                    <li><span class="tree-file-html">01.FileStructure.html</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== USER PROJECT OUTPUT ===== -->
+  <div class="section-panel" data-tab="output">
+    <p>When a user runs <code>hyperspec init</code>, this structure is created:</p>
+
+    <div class="tree">
+      <ul>
+        <li class="open">
+          <span class="tree-dir open">project/</span>
+          <ul>
+            <li class="open">
+              <span class="tree-dir open">docs/html-spec/</span>
+              <ul>
+                <li><span class="tree-file-html">index.html</span><span class="tree-desc">Portal page</span></li>
+                <li><span class="tree-file-json">manifest.json</span><span class="tree-desc">Document index (by hyperspec index)</span></li>
+                <li><span class="tree-file-json">hyperspec.config.json</span><span class="tree-desc">Project configuration</span></li>
+                <li class="open">
+                  <span class="tree-dir open">assets/</span><span class="tree-desc">Copied from HyperSpec package</span>
+                  <ul>
+                    <li><span class="tree-file-js">annotate.js</span></li>
+                    <li><span class="tree-file-css">annotate.css</span></li>
+                    <li><span class="tree-file-css">base.css</span></li>
+                    <li><span class="tree-file-js">portal.js</span></li>
+                    <li><span class="tree-file-css">portal.css</span></li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="tree-dir">components/</span><span class="tree-desc">Empty initially; populated by setup</span>
+                  <ul>
+                    <li><span class="tree-file-css" style="opacity:0.5">components.css</span><span class="tree-desc">(after setup)</span></li>
+                    <li><span class="tree-file-js" style="opacity:0.5">components.js</span><span class="tree-desc">(after setup)</span></li>
+                    <li><span class="tree-file-md" style="opacity:0.5">COMPONENT-REFERENCE.md</span><span class="tree-desc">(auto-generated)</span></li>
+                  </ul>
+                </li>
+                <li class="open">
+                  <span class="tree-dir open">htmls/</span><span class="tree-desc">Generated HTML documents</span>
+                  <ul>
+                    <li><span class="tree-file-html" style="opacity:0.5">auth-spec.html</span><span class="tree-desc">(example)</span></li>
+                    <li>
+                      <span class="tree-dir">ko/</span><span class="tree-desc">Korean translations</span>
+                      <ul>
+                        <li><span class="tree-file-html" style="opacity:0.5">auth-spec.html</span><span class="tree-desc">(example)</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== DEPENDENCIES ===== -->
+  <div class="section-panel" data-tab="deps">
+    <h3>Production</h3>
+    <div class="dep-card">
+      <span class="dep-name">commander</span>
+      <span class="dep-version">^14.x</span>
+      <span>CLI framework — command parsing, options, help text generation</span>
+    </div>
+    <div class="dep-card">
+      <span class="dep-name">chokidar</span>
+      <span class="dep-version">^5.x</span>
+      <span>File watching for <code>hyperspec serve</code> live reload via SSE</span>
+    </div>
+
+    <h3>Development</h3>
+    <div class="dep-card">
+      <span class="dep-name">typescript</span>
+      <span class="dep-version">^6.x</span>
+      <span>Type checking for CLI source code (<code>src/</code>)</span>
+    </div>
+    <div class="dep-card">
+      <span class="dep-name">tsup</span>
+      <span class="dep-version">^8.x</span>
+      <span>CLI bundling: <code>src/cli/index.ts</code> → <code>dist/index.js</code> (ESM, node20)</span>
+    </div>
+    <div class="dep-card">
+      <span class="dep-name">vitest</span>
+      <span class="dep-version">^4.x</span>
+      <span>Test runner — 24 tests across 6 files, node environment</span>
+    </div>
+    <div class="dep-card">
+      <span class="dep-name">@types/node</span>
+      <span class="dep-version">^25.x</span>
+      <span>Node.js type definitions for TypeScript</span>
+    </div>
+
+    <blockquote style="margin-top: 1.5rem;">
+      <strong>Zero runtime deps for output.</strong> The generated HTML uses only vanilla JS/CSS — no frameworks, no CDN, no build tools needed by end users.
+    </blockquote>
+  </div>
+
+  <!-- ===== INTERACTIVE SCRIPTS ===== -->
+  <script>
+    // Tab switching
+    document.querySelectorAll('.section-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelector(`.section-panel[data-tab="${target}"]`).classList.add('active');
+      });
+    });
+
+    // Tree toggle
+    document.querySelectorAll('.tree-dir').forEach(dir => {
+      dir.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const li = dir.closest('li');
+        li.classList.toggle('open');
+        dir.classList.toggle('open');
+      });
+    });
+
+    // Expand/Collapse All
+    document.getElementById('toggleAll')?.addEventListener('click', function() {
+      const tree = document.getElementById('fileTree');
+      const allOpen = tree.querySelectorAll('li:not(.open)').length === 0;
+      tree.querySelectorAll('li').forEach(li => {
+        if (li.querySelector('ul')) {
+          if (allOpen) {
+            li.classList.remove('open');
+            li.querySelector('.tree-dir')?.classList.remove('open');
+          } else {
+            li.classList.add('open');
+            li.querySelector('.tree-dir')?.classList.add('open');
+          }
+        }
+      });
+      this.textContent = allOpen ? 'Expand All' : 'Collapse All';
+    });
+  </script>
+
+  <script src="../assets/annotate.js"></script>
+</body>
+</html>

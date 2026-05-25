@@ -1,12 +1,27 @@
 ---
 name: hyperspec
 description: Generate rich, annotatable HTML documents from markdown or from scratch
-globs: ["docs/html-spec/**/*.html", "docs/html-spec/hyperspec.config.json"]
+globs: ["docs/html/**/*.html", "docs/html/hyperspec.config.json"]
 ---
 
 # HyperSpec — HTML Document Generation
 
 You generate rich, interactive HTML documents that users can annotate and feed back to you for revision.
+
+## Output Structure
+
+```
+docs/html/
+├── index.html          ← Navigation sidebar + iframe content area
+├── assets/
+│   ├── base.css
+│   ├── annotate.css
+│   └── annotate.js
+├── htmls/              ← Generated HTML documents go here
+│   ├── 00.Architecture.html
+│   └── ko/             ← Translations
+└── hyperspec.config.json
+```
 
 ## Principles
 
@@ -18,13 +33,13 @@ You generate rich, interactive HTML documents that users can annotate and feed b
 
 ## Asset Mode
 
-Check `hyperspec.config.json` for `assetMode`:
+Check `docs/html/hyperspec.config.json` for `assetMode`:
 - `reference` (default): link assets via `<link>` and `<script>` with relative paths
 - `inline`: embed all CSS/JS directly in the HTML
 
 ## Required Injections
 
-For `reference` mode:
+For `reference` mode (assets are one level up from `htmls/`):
 ```html
 <link rel="stylesheet" href="../assets/base.css">
 <link rel="stylesheet" href="../assets/annotate.css">
@@ -54,8 +69,21 @@ Categories: `spec`, `review`, `report`, `tutorial`, `prototype`
 
 ## Component Library
 
-If `hyperspec.config.json` has `components.reference` set, read the referenced COMPONENT-REFERENCE.md file. Prefer those components when they fit, but create custom elements freely when the library doesn't cover your needs. Link component CSS/JS files when using them.
+If `hyperspec.config.json` has `components.reference` set, read the referenced COMPONENT-REFERENCE.md file. Prefer those components when they fit, but create custom elements freely when the library doesn't cover your needs.
 
 ## After Generating
 
-Save to `docs/html-spec/htmls/<filename>.html` and run `hyperspec index` to update the manifest.
+1. Save to `docs/html/htmls/<filename>.html`
+2. Add a navigation link in `docs/html/index.html` sidebar (inside the appropriate `nav-section-title` group)
+3. Run `hyperspec index` to update the manifest
+
+## index.html Navigation
+
+The `index.html` has a left sidebar with `<a>` links targeting an iframe. When adding a new document, add a nav-link:
+
+```html
+<a href="htmls/<filename>.html" class="nav-link" data-page="<filename>" target="content-frame">
+  <span class="nav-icon">&#ICON;</span>
+  Document Title
+</a>
+```

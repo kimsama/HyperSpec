@@ -16,8 +16,8 @@ export async function runSetup(projectRoot: string): Promise<void> {
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   try {
     // 1. Output directory
-    const outputDirAnswer = await prompt(rl, "Output directory [docs/html-spec]: ");
-    const outputDir = outputDirAnswer || "docs/html-spec";
+    const outputDirAnswer = await prompt(rl, "Output directory [docs/html]: ");
+    const outputDir = outputDirAnswer || "docs/html";
 
     // 2. Locales
     const localesAnswer = await prompt(rl, "Locales (comma-separated) [en, ko]: ");

@@ -11,7 +11,7 @@ describe("init", () => {
 
   it("creates the full directory structure", async () => {
     await runInit(tempDir);
-    const base = join(tempDir, "docs", "html-spec");
+    const base = join(tempDir, "docs", "html");
     expect(existsSync(join(base, "index.html"))).toBe(true);
     expect(existsSync(join(base, "manifest.json"))).toBe(true);
     expect(existsSync(join(base, "hyperspec.config.json"))).toBe(true);
@@ -25,22 +25,22 @@ describe("init", () => {
 
   it("creates valid config file with defaults", async () => {
     await runInit(tempDir);
-    const configPath = join(tempDir, "docs", "html-spec", "hyperspec.config.json");
+    const configPath = join(tempDir, "docs", "html", "hyperspec.config.json");
     const config = JSON.parse(readFileSync(configPath, "utf-8"));
-    expect(config.outputDir).toBe("docs/html-spec");
+    expect(config.outputDir).toBe("docs/html");
     expect(config.annotation.enabled).toBe(true);
   });
 
   it("creates empty manifest with documents array", async () => {
     await runInit(tempDir);
-    const manifestPath = join(tempDir, "docs", "html-spec", "manifest.json");
+    const manifestPath = join(tempDir, "docs", "html", "manifest.json");
     const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
     expect(manifest.documents).toEqual([]);
   });
 
   it("does not overwrite existing config", async () => {
     await runInit(tempDir);
-    const configPath = join(tempDir, "docs", "html-spec", "hyperspec.config.json");
+    const configPath = join(tempDir, "docs", "html", "hyperspec.config.json");
     const original = readFileSync(configPath, "utf-8");
     await runInit(tempDir);
     expect(readFileSync(configPath, "utf-8")).toBe(original);
