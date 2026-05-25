@@ -1,0 +1,43 @@
+{
+  "name": "hyperspec",
+  "version": "0.1.0",
+  "description": "Annotatable HTML document generation plugin for AI coding agents",
+  "type": "module",
+  "bin": {
+    "hyperspec": "./bin/hyperspec.js"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "assets/",
+    "skills/"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "html",
+    "annotation",
+    "spec",
+    "claude-code",
+    "codex",
+    "ai-agent"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "commander": "^14.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
+  }
+}
