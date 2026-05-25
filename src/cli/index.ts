@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { runInit } from "./init.js";
 import { runIndex } from "./index-cmd.js";
+import { runSetup } from "./setup.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,5 +29,10 @@ program
   .command("index")
   .description("Scan HTML files and generate manifest.json")
   .action(async () => { await runIndex(process.cwd()); });
+
+program
+  .command("setup")
+  .description("Interactive configuration wizard")
+  .action(async () => { await runSetup(process.cwd()); });
 
 program.parse();
