@@ -16,7 +16,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "html",
@@ -26,6 +27,7 @@
     "codex",
     "ai-agent"
   ],
+  "repository": { "type": "git", "url": "https://github.com/kimsama/HyperSpec.git" },
   "license": "MIT",
   "engines": {
     "node": ">=20.0.0"

@@ -7,6 +7,7 @@ import { runIndex } from "./index-cmd.js";
 import { runSetup } from "./setup.js";
 import { runServe } from "./serve.js";
 import { runTranslate } from "./translate.js";
+import { runInstall } from "./install.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -48,5 +49,15 @@ program
   .description("Generate translation prompt for an HTML document")
   .requiredOption("--locale <code>", "Target locale code (e.g., ko)")
   .action(async (file, options) => { await runTranslate(process.cwd(), file, options); });
+
+program
+  .command("install <agent>")
+  .description("Install HyperSpec skill for an AI agent (claude-code, codex, antigravity)")
+  .action(async (agent) => { await runInstall(agent); });
+
+program
+  .command("update <agent>")
+  .description("Update HyperSpec skill files to latest version (alias for install)")
+  .action(async (agent) => { await runInstall(agent); });
 
 program.parse();
