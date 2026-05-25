@@ -23,7 +23,7 @@ export interface HyperSpecConfig {
 
 export function getDefaultConfig(): HyperSpecConfig {
   return {
-    outputDir: "docs/html-spec",
+    outputDir: "docs/html",
     locales: ["en", "ko"],
     components: { css: null, js: null, reference: null },
     assetMode: "reference",

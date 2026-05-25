@@ -4,6 +4,17 @@ Generate and revise rich, annotatable HTML documents. Users review documents in 
 
 ---
 
+## Output structure
+
+```
+docs/html/
+├── index.html        ← Left nav sidebar + iframe content
+├── assets/           ← base.css, annotate.css, annotate.js
+├── htmls/            ← Generated documents
+│   └── <locale>/     ← Translations
+└── hyperspec.config.json
+```
+
 ## Generation rules
 
 - Use tables, SVG, code blocks, tabs, accordions, and interactive JS — not flat prose
@@ -13,9 +24,9 @@ Generate and revise rich, annotatable HTML documents. Users review documents in 
 
 ## Asset injection
 
-Read `docs/html-spec/hyperspec.config.json`. Check `assetMode`:
+Read `docs/html/hyperspec.config.json`. Check `assetMode`:
 
-- `reference`: add these to `<head>`:
+- `reference`: add these to `<head>` (paths relative from `htmls/`):
   ```html
   <link rel="stylesheet" href="../assets/base.css">
   <link rel="stylesheet" href="../assets/annotate.css">
@@ -42,11 +53,13 @@ Read `docs/html-spec/hyperspec.config.json`. Check `assetMode`:
 
 ## Component library
 
-If `components.reference` is set in the config, read that file first. Use those CSS classes and custom elements when they fit. For anything else, write custom styles freely. Link component CSS/JS files when using registered components.
+If `components.reference` is set in config, read that file first. Use those CSS classes and custom elements when they fit. For anything else, write custom styles freely.
 
 ## Output
 
-Save to `docs/html-spec/htmls/<filename>.html`, then run `hyperspec index`.
+1. Save to `docs/html/htmls/<filename>.html`
+2. Add nav link in `docs/html/index.html` sidebar
+3. Run `hyperspec index`
 
 ---
 
@@ -64,7 +77,7 @@ When the user pastes annotation JSON:
 }
 ```
 
-Apply each annotation to the target file in `docs/html-spec/htmls/`:
+Apply each annotation to the target file in `docs/html/htmls/`:
 
 | Type | Action |
 |------|--------|
@@ -84,5 +97,6 @@ Parse: `<file> --locale <code>`
 - Translate prose, headings, UI labels, table headers, alt text
 - Preserve HTML structure, CSS, JS, code blocks, variable names, class names
 - Set `locale` in metadata to the target code
-- Save to `docs/html-spec/htmls/<locale>/<filename>.html`
+- Save to `docs/html/htmls/<locale>/<filename>.html`
+- Add translation link in `docs/html/index.html` sidebar
 - Run `hyperspec index`

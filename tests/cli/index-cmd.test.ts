@@ -23,8 +23,8 @@ describe("index-cmd", () => {
 
   beforeEach(() => {
     tempDir = mkdtempSync(join(tmpdir(), "hyperspec-index-cmd-"));
-    // Set up the expected directory structure: docs/html-spec/htmls/
-    mkdirSync(join(tempDir, "docs", "html-spec", "htmls"), { recursive: true });
+    // Set up the expected directory structure: docs/html/htmls/
+    mkdirSync(join(tempDir, "docs", "html", "htmls"), { recursive: true });
   });
 
   afterEach(() => {
@@ -33,12 +33,12 @@ describe("index-cmd", () => {
 
   it("generates manifest.json from HTML files", async () => {
     // Place a sample HTML doc in htmls/
-    const htmlsDir = join(tempDir, "docs", "html-spec", "htmls");
+    const htmlsDir = join(tempDir, "docs", "html", "htmls");
     copyFileSync(sampleDocPath, join(htmlsDir, "auth-spec.html"));
 
     await runIndex(tempDir);
 
-    const manifestPath = join(tempDir, "docs", "html-spec", "manifest.json");
+    const manifestPath = join(tempDir, "docs", "html", "manifest.json");
     expect(existsSync(manifestPath)).toBe(true);
 
     const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
@@ -52,7 +52,7 @@ describe("index-cmd", () => {
     // htmls/ dir exists but is empty
     await runIndex(tempDir);
 
-    const manifestPath = join(tempDir, "docs", "html-spec", "manifest.json");
+    const manifestPath = join(tempDir, "docs", "html", "manifest.json");
     expect(existsSync(manifestPath)).toBe(true);
 
     const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
