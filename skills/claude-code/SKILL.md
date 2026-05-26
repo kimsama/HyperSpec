@@ -30,6 +30,19 @@ docs/html/
 3. **Self-contained** — Each HTML works standalone. No CDN links. Use local asset references or inline styles
 4. **Export buttons** — Include "Copy as JSON", "Copy as Prompt", or "Copy Diff" buttons where useful
 5. **Metadata required** — Every HTML must include a `<script type="application/json" id="hyperspec-meta">` block
+6. **No emoji** — Do not use emoji characters (Unicode emoji) in generated HTML. Use HTML entities (`&#9679;`, `&#10003;`, `&#9888;`), CSS shapes, or SVG icons instead for visual indicators
+
+## Theme
+
+Read `theme.css` in this skill directory before generating any HTML. It defines:
+- **Design tokens** — CSS custom properties for colors, fonts, spacing (light + dark mode)
+- **Component classes** — `hs-card`, `hs-badge`, `hs-callout`, `hs-table`, `hs-code-block`, `hs-accordion`, etc.
+- **Layout classes** — `hs-page`, `hs-header`, `hs-sidebar`, `hs-main`
+- **Utility classes** — `hs-flex`, `hs-mb-*`, `hs-text-*`, `hs-border`, etc.
+
+All classes use the `hs-` prefix. Use these classes and CSS variables (`hsl(var(--primary))`) when styling generated HTML. You may create additional custom styles as needed, but reference the theme tokens for colors, fonts, and spacing.
+
+The theme CSS must be embedded in every generated HTML as a `<style>` block. Do NOT link to the theme.css file (it is a skill-internal reference, not a deployable asset).
 
 ## Asset Mode
 
@@ -39,14 +52,19 @@ Check `docs/html/hyperspec.config.json` for `assetMode`:
 
 ## Required Injections
 
+Every generated HTML must include the theme CSS (from `theme.css` in this skill directory) as an embedded `<style>` block.
+
+Additionally, inject the annotation module:
+
 For `reference` mode (assets are one level up from `htmls/`):
 ```html
-<link rel="stylesheet" href="../assets/base.css">
 <link rel="stylesheet" href="../assets/annotate.css">
 <script src="../assets/annotate.js"></script>
 ```
 
-For `inline` mode: read these files and embed their contents in `<style>` and `<script>` tags.
+For `inline` mode: read these asset files and embed their contents in `<style>` and `<script>` tags.
+
+Note: `assets/base.css` is no longer required — the theme CSS replaces it.
 
 ## Metadata Block
 

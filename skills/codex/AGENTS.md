@@ -31,7 +31,18 @@ Each HTML file must work standalone in a browser. No CDN, no external URLs. Use 
 **4. Export buttons**
 Where appropriate, include "Copy as JSON", "Copy as Prompt", or "Copy Diff" buttons.
 
-**5. Metadata block (required)**
+**5. No emoji**
+Do not use emoji characters (Unicode emoji) in generated HTML. Use HTML entities (`&#9679;`, `&#10003;`, `&#9888;`), CSS shapes, or SVG icons instead for visual indicators.
+
+**6. Diagram handling**
+When source content contains diagrams (ASCII art, flowcharts, architecture descriptions, data-flow narratives), ask the user which rendering method to use before generating:
+- **Inline SVG** — Best quality, self-contained, theme-aware (recommended)
+- **Mermaid** — `<pre class="mermaid">` with library embedded inline
+- **ASCII** — Styled `<pre>` with box-drawing characters
+- **Excalidraw** — `.excalidraw` JSON files in `diagrams/` subdirectory
+- **Skip** — Omit diagrams
+
+**7. Metadata block (required)**
 Every generated HTML must contain:
 
 ```html
@@ -53,17 +64,28 @@ Valid categories: `spec`, `review`, `report`, `tutorial`, `prototype`
 
 ---
 
+## Theme
+
+Every generated HTML must embed a theme CSS `<style>` block defining:
+- CSS custom properties for colors, fonts, spacing (light + dark mode via `.dark` class)
+- Component classes with `hs-` prefix: `hs-card`, `hs-badge`, `hs-callout`, `hs-table`, `hs-code-block`, `hs-accordion`, `hs-header`, `hs-sidebar`, etc.
+- Use `hsl(var(--primary))` patterns for all colors. Key tokens: `--background`, `--foreground`, `--primary`, `--muted`, `--accent`, `--destructive`, `--border`, `--card`, plus `-foreground` variants.
+- Fonts: Montserrat (sans, light mode), Inter (sans, dark mode), Fira Code (mono).
+
+If a `theme.css` reference file exists in the skill directory, read it for the full token and class definitions.
+
 ## Asset Mode
 
 Read `docs/html/hyperspec.config.json` before generating. Check the `assetMode` field:
 
-- **`reference`** (default): inject assets as linked files (relative to `htmls/`)
+- **`reference`** (default): inject annotation assets as linked files (relative to `htmls/`)
   ```html
-  <link rel="stylesheet" href="../assets/base.css">
   <link rel="stylesheet" href="../assets/annotate.css">
   <script src="../assets/annotate.js"></script>
   ```
-- **`inline`**: read asset files and embed their contents directly inside `<style>` and `<script>` tags.
+- **`inline`**: read annotation asset files and embed their contents directly inside `<style>` and `<script>` tags.
+
+Note: `assets/base.css` is no longer required — the embedded theme CSS replaces it.
 
 ---
 

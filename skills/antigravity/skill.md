@@ -21,18 +21,34 @@ docs/html/
 - Break content into navigable sections with clear visual hierarchy
 - No CDN. No external URLs. All assets are local or inline
 - Every HTML must contain a `hyperspec-meta` JSON block (see below)
+- No emoji characters (Unicode emoji). Use HTML entities (`&#9679;`, `&#10003;`, `&#9888;`), CSS shapes, or SVG icons instead
+
+## Diagram handling
+
+When source content contains diagrams (ASCII art, flowcharts, architecture descriptions, data-flow narratives), ask the user which rendering method to use before generating:
+
+- **Inline SVG** — Best quality, self-contained, theme-aware (recommended)
+- **Mermaid** — `<pre class="mermaid">` with library embedded inline
+- **ASCII** — Styled `<pre>` with box-drawing characters
+- **Excalidraw** — `.excalidraw` JSON files in `diagrams/` subdirectory
+- **Skip** — Omit diagrams
+
+## Theme
+
+If a `theme.css` exists in this skill directory, read it before generating HTML. It defines CSS custom properties (design tokens) for colors, fonts, spacing, plus component classes (`hs-card`, `hs-badge`, `hs-callout`, `hs-table`, etc.) with `hs-` prefix. Embed the theme CSS as a `<style>` block in every generated HTML. Use `hsl(var(--primary))` patterns for colors.
 
 ## Asset injection
 
 Read `docs/html/hyperspec.config.json`. Check `assetMode`:
 
-- `reference`: add these to `<head>` (paths relative from `htmls/`):
+- `reference`: add annotation assets to `<head>` (paths relative from `htmls/`):
   ```html
-  <link rel="stylesheet" href="../assets/base.css">
   <link rel="stylesheet" href="../assets/annotate.css">
   <script src="../assets/annotate.js"></script>
   ```
-- `inline`: read those three files and embed them as `<style>` / `<script>` tags
+- `inline`: read those files and embed them as `<style>` / `<script>` tags
+
+Note: `assets/base.css` is no longer required — the embedded theme CSS replaces it.
 
 ## Metadata block (required in every HTML)
 
