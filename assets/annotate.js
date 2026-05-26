@@ -154,11 +154,12 @@
   function createToolbar() {
     toolbar = document.createElement("div");
     toolbar.id = "hs-toolbar";
+    var tbIcon = function (d) { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>'; };
     toolbar.innerHTML =
-      '<button class="hs-toolbar-btn" data-action="comment" title="Comment">💬</button>' +
-      '<button class="hs-toolbar-btn" data-action="modify" title="Modify">✏️</button>' +
-      '<button class="hs-toolbar-btn" data-action="delete" title="Delete">🗑️</button>' +
-      '<button class="hs-toolbar-btn" data-action="insert" title="Insert After">➕</button>';
+      '<button class="hs-toolbar-btn" data-action="comment" title="Comment">' + tbIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>') + '</button>' +
+      '<button class="hs-toolbar-btn" data-action="modify" title="Modify">' + tbIcon('<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>') + '</button>' +
+      '<button class="hs-toolbar-btn" data-action="delete" title="Delete">' + tbIcon('<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>') + '</button>' +
+      '<button class="hs-toolbar-btn" data-action="insert" title="Insert After">' + tbIcon('<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>') + '</button>';
     toolbar.style.display = "none";
     document.body.appendChild(toolbar);
 
@@ -241,10 +242,10 @@
   }
 
   var ACTION_LABELS = {
-    comment: "💬 Comment",
-    modify: "✏️ Modify",
-    delete: "🗑️ Delete",
-    insert: "➕ Insert After",
+    comment: "Comment",
+    modify: "Modify",
+    delete: "Delete",
+    insert: "Insert After",
   };
 
   function showPopover(action) {
@@ -442,11 +443,15 @@
     });
   }
 
+  function svgIcon(d, size) {
+    var s = size || 14;
+    return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
   var TYPE_ICONS = {
-    comment: "💬",
-    modify: "✏️",
-    delete: "🗑️",
-    insert: "➕",
+    comment: svgIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'),
+    modify: svgIcon('<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>'),
+    delete: svgIcon('<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'),
+    insert: svgIcon('<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>'),
   };
 
   function renderPanelList() {

@@ -17,9 +17,10 @@
   align-items: center;
   gap: 2px;
   padding: 4px 6px;
-  background: #1e293b;
+  background: hsl(var(--card, 0 0% 100%));
+  border: 1px solid hsl(var(--border, 0 0% 90%));
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
   opacity: 0;
   transition: opacity 0.15s ease;
 }
@@ -38,13 +39,14 @@
   background: transparent;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  color: hsl(var(--muted-foreground, 0 0% 40%));
   line-height: 1;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .hs-toolbar-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: hsl(var(--accent, 0 0% 92%));
+  color: hsl(var(--foreground, 0 0% 20%));
 }
 
 /* ── Popover ──────────────────────────────────────────────────────── */
