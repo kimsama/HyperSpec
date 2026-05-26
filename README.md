@@ -1,8 +1,10 @@
 # HyperSpec
 
-Annotatable HTML document generation for AI coding agents.
+Annotatable HTML document generation skills for AI coding agents.
 
 Agents generate rich, interactive HTML (tables, SVG, tabs, code blocks) instead of markdown. Users annotate in-browser, export structured JSON feedback, and paste it back — the agent applies changes and increments the version.
+
+Inspired by Thariq Shihipar's ([@trq212](https://x.com/trq212/status/2052811606032269638)) ["HTML is the new markdown"](https://www.lennysnewsletter.com/p/html-is-the-new-markdown-how-anthropic) -- the idea that AI agents should output HTML instead of markdown because it enables color, charts, interactivity, and direct sharing. HyperSpec was built to make that practical: give agents a skill that converts existing markdown docs into rich HTML, with a built-in annotation loop for iterative feedback.
 
 ## Features
 
