@@ -535,12 +535,26 @@
   // ── 9. Export Feedback ──────────────────────────────────────────────
   var exportBtn = null;
 
+  function getHeaderActions() {
+    var inner = document.querySelector(".hs-header-inner");
+    if (!inner) return null;
+    var divs = inner.querySelectorAll(":scope > div");
+    return divs.length > 1 ? divs[divs.length - 1] : null;
+  }
+
   function createExportButton() {
     exportBtn = document.createElement("button");
     exportBtn.id = "hs-export-btn";
-    exportBtn.innerHTML = '📋 <span class="hs-badge">0</span>';
+    exportBtn.className = "hs-btn hs-btn-ghost hs-no-print";
+    exportBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg><span class="hs-badge">0</span>';
     exportBtn.title = "Export feedback to clipboard";
-    document.body.appendChild(exportBtn);
+
+    var headerActions = getHeaderActions();
+    if (headerActions) {
+      headerActions.appendChild(exportBtn);
+    } else {
+      document.body.appendChild(exportBtn);
+    }
 
     exportBtn.addEventListener("click", exportFeedback);
   }
@@ -635,9 +649,16 @@
   function createPanelToggle() {
     panelToggle = document.createElement("button");
     panelToggle.id = "hs-panel-toggle";
-    panelToggle.innerHTML = "☰";
+    panelToggle.className = "hs-btn hs-btn-ghost hs-no-print";
+    panelToggle.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg>';
     panelToggle.title = "Toggle annotations panel";
-    document.body.appendChild(panelToggle);
+
+    var headerActions = getHeaderActions();
+    if (headerActions) {
+      headerActions.appendChild(panelToggle);
+    } else {
+      document.body.appendChild(panelToggle);
+    }
 
     panelToggle.addEventListener("click", togglePanel);
   }
