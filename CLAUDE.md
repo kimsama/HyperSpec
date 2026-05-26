@@ -24,6 +24,8 @@ TypeScript CLI compiled with tsup (`src/` -> `dist/`) paired with vanilla JS/CSS
 
 `init.ts` and `install.ts` need to find `assets/` and `skills/` at the package root. Since tsup bundles to `dist/index.js`, `__dirname` resolves to `dist/` at runtime. Both use a `resolve*Dir()` helper that tries `__dirname + "/../assets"` first, then walks up to find the directory — this makes the same code work in both compiled CLI and vitest contexts.
 
+**Two copies of assets exist:** the source (`assets/`) and the deployed copy (`docs/html/assets/`). `hyperspec init` copies source to deployed. The browser loads the deployed copy, so edits to source `assets/` don't take effect until copied to `docs/html/assets/`. Whenever `assets/annotate.js` or `assets/annotate.css` is modified, copy them to `docs/html/assets/`.
+
 ## Conventions
 
 - Browser assets (`assets/`) are vanilla JS IIFE + plain CSS. No TypeScript, no modules, no build step.

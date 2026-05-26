@@ -2,6 +2,16 @@
 (function () {
   "use strict";
 
+  // ── 0. Iframe Detection ─────────────────────────────────────────────
+  var isEmbedded = false;
+  try { isEmbedded = window.self !== window.top; } catch (e) { isEmbedded = true; }
+  if (!isEmbedded && window.location.search.indexOf("embedded") !== -1) {
+    isEmbedded = true;
+  }
+  if (isEmbedded) {
+    document.documentElement.classList.add("hs-embedded");
+  }
+
   // ── 1. Storage ──────────────────────────────────────────────────────
   var annotations = [];
   var currentSelection = null;

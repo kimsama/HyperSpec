@@ -1,5 +1,9 @@
 /* HyperSpec Annotation Styles */
 
+/* ── Embedded Mode (iframe) ──────────────────────────────────────── */
+.hs-embedded .hs-sidebar { display: none !important; }
+.hs-embedded .hs-main { max-width: 100%; }
+
 /* ── Toolbar ──────────────────────────────────────────────────────── */
 #hs-toolbar {
   position: absolute;

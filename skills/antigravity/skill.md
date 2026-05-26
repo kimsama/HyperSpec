@@ -71,6 +71,15 @@ Note: `assets/base.css` is no longer required — the embedded theme CSS replace
 
 If `components.reference` is set in config, read that file first. Use those CSS classes and custom elements when they fit. For anything else, write custom styles freely.
 
+## Dual Navigation Mode
+
+Each generated HTML has its own `hs-sidebar` with a section-level table of contents. The annotation module (`annotate.js`) auto-detects iframe embedding:
+
+- **Standalone** — per-page `hs-sidebar` TOC is visible for section navigation.
+- **Embedded** (inside `index.html` iframe) — `hs-sidebar` is hidden; portal sidebar handles navigation.
+
+Always generate pages with `hs-sidebar` TOC. The iframe detection is automatic.
+
 ## Output
 
 1. Save to `docs/html/htmls/<filename>.html`

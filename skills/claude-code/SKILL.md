@@ -95,13 +95,24 @@ If `hyperspec.config.json` has `components.reference` set, read the referenced C
 2. Add a navigation link in `docs/html/index.html` sidebar (inside the appropriate `nav-section-title` group)
 3. Run `hyperspec index` to update the manifest
 
+## Dual Navigation Mode
+
+Each generated HTML has its own `hs-sidebar` with a section-level table of contents ("On this page"). The annotation module (`annotate.js`) automatically detects whether the page is loaded inside an iframe:
+
+- **Standalone** (`00.Architecture.html` opened directly) — the per-page `hs-sidebar` TOC is visible, providing section navigation within the document.
+- **Embedded** (loaded inside `index.html`'s iframe) — the per-page `hs-sidebar` is automatically hidden. The portal's page-level sidebar handles navigation instead.
+
+This is automatic — no extra markup or config needed. Always generate pages with the `hs-sidebar` TOC; `annotate.js` handles the rest.
+
 ## index.html Navigation
 
 The `index.html` has a left sidebar with `<a>` links targeting an iframe. When adding a new document, add a nav-link:
 
 ```html
-<a href="htmls/<filename>.html" class="nav-link" data-page="<filename>" target="content-frame">
+<a href="htmls/<filename>.html?embedded" class="nav-link" data-page="<filename>" target="content-frame">
   <span class="nav-icon">&#ICON;</span>
   Document Title
 </a>
 ```
+
+The `?embedded` query parameter tells `annotate.js` to hide the per-page sidebar. Always include it in `index.html` nav links.

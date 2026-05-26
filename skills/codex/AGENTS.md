@@ -95,6 +95,15 @@ If `hyperspec.config.json` has `components.reference` set to a path, read that f
 
 ---
 
+## Dual Navigation Mode
+
+Each generated HTML has its own `hs-sidebar` with a section-level table of contents ("On this page"). The annotation module (`annotate.js`) automatically detects whether the page is loaded inside an iframe:
+
+- **Standalone** (HTML opened directly) — the per-page `hs-sidebar` TOC is visible for section navigation.
+- **Embedded** (loaded inside `index.html`'s iframe) — the per-page `hs-sidebar` is automatically hidden; the portal's page-level sidebar handles navigation.
+
+Always generate pages with the `hs-sidebar` TOC. The iframe detection is automatic.
+
 ## Output Location
 
 1. Save generated HTML to: `docs/html/htmls/<filename>.html`
