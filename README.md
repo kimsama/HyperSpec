@@ -6,6 +6,8 @@ Agents generate rich, interactive HTML (tables, SVG, tabs, code blocks) instead 
 
 Inspired by Thariq Shihipar's ([@trq212](https://x.com/trq212/status/2052811606032269638)) ["HTML is the new markdown"](https://www.lennysnewsletter.com/p/html-is-the-new-markdown-how-anthropic) -- the idea that AI agents should output HTML instead of markdown because it enables color, charts, interactivity, and direct sharing. HyperSpec was built to make that practical: give agents a skill that converts existing markdown docs into rich HTML, with a built-in annotation loop for iterative feedback.
 
+<p align="center"><img src="images/capture01.png" alt="HyperSpec portal with annotation toolbar" width="80%"></p>
+
 ## Features
 
 - **Rich HTML generation** -- Tables, SVG diagrams, code blocks, tabs, accordions, and interactive elements instead of flat markdown
@@ -48,8 +50,6 @@ hyperspec install claude-code  # install agent skills
 | [`CLAUDE.md`](CLAUDE.md) | Project instructions for AI agents |
 | [`docs/00.Architecture.md`](docs/00.Architecture.md) | System architecture and data flows |
 | [`docs/01.FileStructure.md`](docs/01.FileStructure.md) | Repository layout with file descriptions |
-| [`docs/superpowers/specs/`](docs/superpowers/specs/) | Design specification |
-| [`docs/superpowers/plans/`](docs/superpowers/plans/) | Implementation plan |
 
 ## License
 
