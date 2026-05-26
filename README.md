@@ -16,6 +16,7 @@ Inspired by Thariq Shihipar's ([@trq212](https://x.com/trq212/status/20528116060
 - **Dual navigation mode** -- Pages include a section-level TOC sidebar for standalone viewing; when loaded through the portal (`index.html`), the per-page sidebar auto-hides and the portal's page-level navigation takes over
 - **Multi-agent support** -- Works with Claude Code, Codex, and Antigravity via agent-specific skill files
 - **Component library integration** -- Register CSS/JS component libraries; agents prefer registered components during generation
+- **Static-site ready** -- Output is plain HTML/CSS/JS with no build step; drop `docs/html/` into GitHub Pages, S3, or any static host
 - **Translation workflow** -- Generate locale-specific translations with automatic outdated-version detection
 
 ## Install
