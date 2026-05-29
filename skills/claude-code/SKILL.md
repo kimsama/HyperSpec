@@ -42,6 +42,22 @@ Read `theme.css` in this skill directory before generating any HTML. It defines:
 
 All classes use the `hs-` prefix. Use these classes and CSS variables (`hsl(var(--primary))`) when styling generated HTML. You may create additional custom styles as needed, but reference the theme tokens for colors, fonts, and spacing.
 
+### Color Palette — Monochrome + 2-Tone
+
+**No rainbow accents.** Generated HTML must use at most 2 accent colors beyond the grayscale base:
+
+| Token | Role | Usage |
+|-------|------|-------|
+| `--hs-accent` | Navy | Primary accent — section numbers, completed items, borders, key elements |
+| `--hs-accent-light` | Navy tint | Accent-tinted backgrounds for cards and sections |
+| `--hs-highlight` | Muted gold | Reserved for ONE special element per document (e.g., key section, important callout) |
+| `--hs-highlight-light` | Gold tint | Highlight-tinted backgrounds |
+| Gray scale | `--primary`, `--muted`, `--border` | Everything else — hierarchy through shade, not hue |
+
+Use `hsl(var(--hs-accent))` for borders and text, `hsl(var(--hs-accent) / 0.1)` for subtle backgrounds. Reserve `--hs-highlight` (gold) for at most one special element per document. Differentiate other elements through **gray shade**, **size**, or **weight** — not additional hues.
+
+Do NOT use saturated colors like bright red, blue, green, or purple for decorative purposes. The only exception is `--destructive` for genuine error states.
+
 The theme CSS must be embedded in every generated HTML as a `<style>` block. Do NOT link to the theme.css file (it is a skill-internal reference, not a deployable asset).
 
 ## Asset Mode

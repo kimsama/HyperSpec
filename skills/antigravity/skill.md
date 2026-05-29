@@ -37,6 +37,10 @@ When source content contains diagrams (ASCII art, flowcharts, architecture descr
 
 If a `theme.css` exists in this skill directory, read it before generating HTML. It defines CSS custom properties (design tokens) for colors, fonts, spacing, plus component classes (`hs-card`, `hs-badge`, `hs-callout`, `hs-table`, etc.) with `hs-` prefix. Embed the theme CSS as a `<style>` block in every generated HTML. Use `hsl(var(--primary))` patterns for colors.
 
+### Color Palette — Monochrome + 2-Tone
+
+**No rainbow accents.** Use at most 2 accent colors beyond the grayscale base. Use `--hs-accent` (navy) for primary accents and `--hs-accent-light` for backgrounds. Reserve `--hs-highlight` (gold) for at most one special element per document. Differentiate other elements through **gray shade**, **size**, or **weight** — not additional hues. Do NOT use saturated colors (bright red, blue, green, purple) for decorative purposes.
+
 ## Asset injection
 
 Read `docs/html/hyperspec.config.json`. Check `assetMode`:

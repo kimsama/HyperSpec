@@ -64,6 +64,14 @@
   --input: 0 0% 87.8431%;
   --ring: 0 0% 37.6471%;
 
+  /* Semantic Accents — monochrome + 2-tone palette */
+  --hs-accent: 215 30% 25%;
+  --hs-accent-foreground: 0 0% 100%;
+  --hs-accent-light: 215 30% 90%;
+  --hs-highlight: 40 50% 35%;
+  --hs-highlight-foreground: 0 0% 100%;
+  --hs-highlight-light: 42 40% 93%;
+
   /* Charts */
   --chart-1: 0 0% 37.6471%;
   --chart-2: 180 17.9191% 33.9216%;
@@ -110,6 +118,12 @@
   --border: 0 0% 20.7843%;
   --input: 0 0% 18.8235%;
   --ring: 0 0% 62.7451%;
+  --hs-accent: 212 44% 43%;
+  --hs-accent-foreground: 0 0% 100%;
+  --hs-accent-light: 215 20% 14%;
+  --hs-highlight: 46 50% 54%;
+  --hs-highlight-foreground: 0 0% 10%;
+  --hs-highlight-light: 40 20% 14%;
   --chart-1: 0 0% 62.7451%;
   --chart-2: 187.0588 15.1786% 56.0784%;
   --chart-3: 0 0% 43.9216%;
@@ -270,6 +284,10 @@ button, input, select, textarea { font: inherit; color: inherit; margin: 0; padd
 .hs-text-lg { font-size: 1.125rem; line-height: 1.75rem; }
 .hs-text-muted { color: hsl(var(--muted-foreground)); }
 .hs-text-primary { color: hsl(var(--primary)); }
+.hs-text-accent { color: hsl(var(--hs-accent)); }
+.hs-text-highlight { color: hsl(var(--hs-highlight)); }
+.hs-bg-accent-light { background-color: hsl(var(--hs-accent-light)); }
+.hs-bg-highlight-light { background-color: hsl(var(--hs-highlight-light)); }
 .hs-font-mono { font-family: var(--font-mono); }
 .hs-font-semibold { font-weight: 600; }
 .hs-font-bold { font-weight: 700; }
@@ -315,13 +333,13 @@ button, input, select, textarea { font: inherit; color: inherit; margin: 0; padd
 }
 
 .hs-badge-success {
-  background-color: hsl(142 71% 45% / 0.1);
-  color: hsl(142 71% 35%);
+  background-color: hsl(var(--hs-accent) / 0.1);
+  color: hsl(var(--hs-accent));
 }
 
-.dark .hs-badge-success {
-  background-color: hsl(142 71% 45% / 0.15);
-  color: hsl(142 71% 60%);
+.hs-badge-highlight {
+  background-color: hsl(var(--hs-highlight) / 0.1);
+  color: hsl(var(--hs-highlight));
 }
 
 /* ── Step Number ──────────────────────────────────────────────── */
@@ -426,13 +444,11 @@ button, input, select, textarea { font: inherit; color: inherit; margin: 0; padd
 .hs-callout-info .hs-callout-title { color: hsl(var(--primary)); }
 
 .hs-callout-warn {
-  border-left: 4px solid hsl(45 93% 47%);
-  background-color: hsl(48 96% 89% / 0.5);
+  border-left: 4px solid hsl(var(--hs-highlight));
+  background-color: hsl(var(--hs-highlight) / 0.08);
 }
 
-.dark .hs-callout-warn { background-color: hsl(45 100% 15% / 0.2); }
-.hs-callout-warn .hs-callout-title { color: hsl(45 93% 37%); }
-.dark .hs-callout-warn .hs-callout-title { color: hsl(45 93% 60%); }
+.hs-callout-warn .hs-callout-title { color: hsl(var(--hs-highlight)); }
 
 .hs-callout-error {
   border-left: 4px solid hsl(var(--destructive));
@@ -442,12 +458,11 @@ button, input, select, textarea { font: inherit; color: inherit; margin: 0; padd
 .hs-callout-error .hs-callout-title { color: hsl(var(--destructive)); }
 
 .hs-callout-success {
-  border-left: 4px solid hsl(142 71% 45%);
-  background-color: hsl(142 71% 45% / 0.05);
+  border-left: 4px solid hsl(var(--hs-accent));
+  background-color: hsl(var(--hs-accent) / 0.05);
 }
 
-.hs-callout-success .hs-callout-title { color: hsl(142 71% 35%); }
-.dark .hs-callout-success .hs-callout-title { color: hsl(142 71% 60%); }
+.hs-callout-success .hs-callout-title { color: hsl(var(--hs-accent)); }
 
 /* ── Accordion / Details ──────────────────────────────────────── */
 
